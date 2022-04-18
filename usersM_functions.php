@@ -40,8 +40,8 @@ function addStudent($con,$am,$fullname,$entyear){
 		return -1;
 	}
 	$sql="INSERT INTO `Student`(`am`, `fullname`, `EntYear`) VALUES (?,?,?)";
-	$con->prepare($sql);
-	$stmt->bintParam("ssi",$am,$fullname,$entyear);
+	$stmt=$con->prepare($sql);
+	$stmt->bind_param("ssi",$am,$fullname,$entyear);
 	$stmt->execute();
 	return 1;
 
@@ -49,78 +49,78 @@ function addStudent($con,$am,$fullname,$entyear){
 
 
 function addStUser ( $con, $name, $psw, $role, $stAm, $email  ){
-	$con->prepare("INSERT INTO Usr ( name ,  psw ,  role ,  stAm,  email) VALUES (?,?,?,?,?)");
+	$stmt=$con->prepare("INSERT INTO Usr ( name ,  psw ,  role ,  stAm,  email) VALUES (?,?,?,?,?)");
 	$hash = password_hash($psw, PASSWORD_DEFAULT);
-	$stmt->bindParam( "sssss", $name, $hash, $role, $stAm, $email );
+	$stmt->bind_param( "sssss", $name, $hash, $role, $stAm, $email );
 	$stmt->execute();
 }
 
 function addTeUser ( $con, $name, $psw, $role, $tId, $email  ){
-	$con->prepare("INSERT INTO Usr ( name ,  psw ,  role , tId, email) VALUES (?,?,?,?,?)");
+	$stmt=$con->prepare("INSERT INTO Usr ( name ,  psw ,  role , tId, email) VALUES (?,?,?,?,?)");
 	$hash = password_hash($psw, PASSWORD_DEFAULT);
-	bindParam( "sssis", $name, $hash, $role, $tId, $email );
+	$stmt->bind_param( "sssis", $name, $hash, $role, $tId, $email );
 	$stmt->execute();
 }
 
 function delUserByName ( $con, $name ){
-	$con->prepare("DELETE FROM  rsr  WHERE name = ?");
-	$stmt->bindParam( "s", $name);
+	$stmt=$con->prepare("DELETE FROM  rsr  WHERE name = ?");
+	$stmt->bind_param( "s", $name);
 	$stmt->execute();
 }
 
 function delUserById ( $con, $id ){
-	$con->prepare("DELETE FROM  Usr  WHERE id = ?");
-	$stmt->bindParam( "i", $id);
+	$stmt=$con->prepare("DELETE FROM  Usr  WHERE id = ?");
+	$stmt->bind_param( "i", $id);
 	$stmt->execute();
 }
 
 function editUser ( $con, $name, $email, $id  ){
-	$con->prepare("UPDATE Usr SET name=?,email=? WHERE id = ?");
-	$stmt->bindParam( "ssi", $name, $email, $id );
+	$stmt=$con->prepare("UPDATE Usr SET name=?,email=? WHERE id = ?");
+	$stmt->bind_param( "ssi", $name, $email, $id );
 	$stmt->execute();
 }
 
 function editStudent ( $con, $am, $fullname, $EntYear  ){
-	$con->prepare("UPDATE Student SET am=?,fullname=?,EntYear=? WHERE am =?");
-	$stmt->bindParam( "ssis", $am, $fullname, $EntYear, $am );
+	$stmt=$con->prepare("UPDATE Student SET am=?,fullname=?,EntYear=? WHERE am =?");
+	$stmt->bind_param( "ssis", $am, $fullname, $EntYear, $am );
 	$stmt->execute();
 }
 
 function delStudentByAm ( $con, $am ){
-	$con->prepare("DELETE FROM Student WHERE am =?");
-	$stmt->bindParam( "s", $am);
+	$stmt=$con->prepare("DELETE FROM Student WHERE am =?");
+	$stmt->bind_param( "s", $am);
 	$stmt->execute();
 }
 
 function getTeacherByName ( $con, $fullname  ){
-	$con->prepare("SELECT * FROM Teacher WHERE fullname =?");
-	$stmt->bindParam( "s", $fullname );
+	$stmt=$con->prepare("SELECT * FROM Teacher WHERE fullname =?");
+	$stmt->bind_param( "s", $fullname );
 	$stmt->execute();
 	$result=$stmt->get_result();
 	return $result;
 }
 function getStudentByName ( $con, $fullname  ){
-	$con->prepare("SELECT * FROM Student WHERE fullname =?");
-	$stmt->bindParam( "s", $fullname );
+	$stmt=$con->prepare("SELECT * FROM Student WHERE fullname =?");
+	$stmt->bind_param( "s", $fullname );
 	$stmt->execute();
 	$result=$stmt->get_result();
 	return $result;
 }
 function addTeacher ( $con, $fullname, $lvl  ){
-	$con->prepare("INSERT INTO Teacher( fullname, lvl) VALUES (?,?)");
-	$stmt->bindParam( "ss", $fullname, $lvl );
+	$stmt=$con->prepare("INSERT INTO Teacher( fullname, lvl) VALUES (?,?)");
+	$stmt->bind_param( "ss", $fullname, $lvl );
 	$stmt->execute();
 }
 
 function editTeacher ( $con, $fullname, $lvl  ){
-	$con->prepare("UPDATE Teacher SET fullname=?,lvl=? WHERE 1");
-	$stmt->bindParam( "ss", $fullname, $lvl );
+	$stmt=$con->prepare("UPDATE Teacher SET fullname=?,lvl=? WHERE 1");
+	$stmt->bind_param( "ss", $fullname, $lvl );
 	$stmt->execute();
 }
 
 function delTeacherById ( $con, $id ){
-	$con->prepare("SELECT id, fullname, lvl FROM Teacher WHERE id =?");
-	$stmt->bindParam( "i", $id);
+	$stmt=$con->prepare("SELECT id, fullname, lvl FROM Teacher WHERE id =?");
+	$stmt->bind_param( "i", $id);
 	$stmt->execute();
 }
 

@@ -1,13 +1,15 @@
 <DOCTYPE html>
 <html>
 <head>
-<?php include 'database.php';?>
+<?php include '../database.php';
+    include 'functions.php';
+    session_start();?>
   <meta charset="utf-8">
   <meta name=”viewport” content=”width=device-width, initial-scale=1.0">
   <!--Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <!--Javascript dependency for bootstrap-->
-  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="../home.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <title>Πανεπιστήμιο</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -47,6 +49,9 @@
             padding: 0;
             margin: 0;
         }
+        .hidden{
+            display: none;
+        }
         @media (max-width: 768px) {
             #sidebar {
                 margin-left: -250px;
@@ -59,7 +64,8 @@
 
 </head>
 <body>
-    <script src="home.js"></script>
+    <script src="../home.js"></script>
+    <script src="lessons.js"></script>
     <div class="wrapper">
         <!--  Side bar -->
         <nav id="sidebar">
@@ -67,20 +73,20 @@
            <h3>Πανεπιστήμιο</h3>
        </div>     
        <ul class="list-unstyled components">
-           <li class="active">
-               <a href="home.php">Home</a>
+           <li >
+               <a href="../home.php">Home</a>
            </li>
-           <li class="">
+           <li class="active">
            <a href="#lessons" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-togle">Μαθήματα</a>
            <ul class="collapse no-bullets" id="lessons">
-               <li>
-                    <a href="Lessons/add.php">Εισαγωγή μαθήματος</a>
+               <li >
+                    <a href="add.php">Εισαγωγή μαθήματος</a>
                </li>
-               <li>
-                    <a href="Lessons/searchLesson.php">Αναζήτηση μαθήματος</a>
+               <li >
+                    <a href="searchLesson.php">Αναζήτηση μαθήματος</a>
                </li>
-               <li>
-                    <a href="Lessons/assignTeacher.php">Ανάθεση Διδασκαλίας</a>
+               <li class="active">
+                    <a href="assignTeacher.php">Ανάθεση Διδασκαλίας</a>
                </li>
                <li><a href="#">Διαχείρηση Διδασκαλίας</a></li>
             </ul>
@@ -144,18 +150,93 @@
        </ul>
         </nav>
         <!-- Page Content -->
+      
         <div id="content">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                
+                </div>
                 <div class="container-fluid">
-                  
+                    
+                    <div class="row">
+                    <div class="row">    
+                <div class="col-sm">
+                <button type="button" id="sidebarCollapse" class="row btn btn-info">
+                    <i class="fas fa-align-left"></i>
+                    <span>+</span>
+                </button>
+                </div>
+                <?php if(isset($_POST['assign'])){
+                    if(isset($_POST['teacherSel']) && !empty($_POST['teacherSel'])){
+                        if(isset($_POST['lessonSel']) && !empty($_POST['lessonSel'])){
+                            $tid=$_POST['teacherSel'];
+                            $lid=$_POST['lessonSel'];
+                            if(isset($_POST['year']) && !empty($_POST['year'])){
+                                $year=$_POST['year'];
+                                assignToTeacher($con,$year,$tid,$lid);
+                                ?><p class="alert alert-primary"><?php print("Η ανάθεση έγινε επιτυχώς"); ?><p><?php
+                            }
 
-                    <button type="button" id="sidebarCollapse" class="btn btn-info">
-                        <i class="fas fa-align-left"></i>
-                        <span>+</span>
-                    </button>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                         Architecto illum maxime sit ex neque odio, alias vitae excepturi consectetur fuga molestiae,
-                          saepe itaque assumenda voluptatum velit beatae iure, voluptatibus totam.</p>
+                        }
+                    }
+                    if(isset($_POST['show'])){
+                        $result=showTeachings($con);
+                        ?><table class="table">
+                            <thead><tr>
+                                    <th scope="col">year</th>
+                                    <th scope="col">semester</th>
+                                    <th scope="col">weightTheory</th>
+                                    <th scope="col">weightLab</th>
+                                    <th scope="col">labLimit</th>
+                                    <th scope="col">weightTheory</th>
+                                    <th scope="col">weightTheory</th>
+                                    <th scope="col">weightTheory</th>
+                            </tr></thead><tbody><?php
+                            while($row= $result->fetch_assoc()){
+                                ?><tr>
+                                <td><?php print($row['name']); ?></td>
+
+                                <td><?php print($row['description']); ?></td>
+                                <td><?php print($row['semester']);?></td>
+                            </tr><?php
+
+                            }
+                        
+                        ?></tbody></table><?php
+                    }
+
+                } ?>
+                        <form method="POST">
+                        <label >Διδάσκων</label>
+                        <select style="max-width:40vw"i class="form-control form-control-md mt-2" name= "teacherSel">
+                        <?php
+                        $result=showTeachers($con); 
+                        while($row =$result->fetch_assoc()){
+                            ?><option value = "<?php echo $row['id'];?>" ><?php echo($row['fullname']);?></option>
+                            <?php } ?>
+                
+
+        
+                        </select>
+                        <label >Μάθημα</label>
+                        <select  style="max-width:40vw"class="form-control form-control-md mt-2" name= "lessonSel">
+                        <?php
+                        $result=showLessons($con); 
+                        while($row =$result->fetch_assoc()){
+                            ?><option value = "<?php echo $row['id'];?>" ><?php echo($row['name']);?></option>
+                            <?php } ?>
+                
+
+        
+                        </select>
+                        <label >Χρονιά</label>
+                        <input style="max-width:40vw" name="year" class="form-control">
+                        <button type="submit"  name="assign" value="as" class="mt-3 btn btn-info">ανάθεση</button> 
+                        </form>
+                        <form method="POST">
+                            <button class="btn btn-info" type="submit" name="show" value="sh" > Εμφάνηση αναθέσεων</button>
+                        </form> 
+                    </div>
+
 
                 </div>
                 

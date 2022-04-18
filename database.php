@@ -41,22 +41,4 @@ include "usersM_functions.php";
 //the addition of the admin user
 //addUser($con,"admin","1234","admin","admin@email.com");
 
-//mail verification function
-function mailVerificationStudent($con,$name,$pass,$role,$am,$fullname,$entyear,$email){
-  if(studentExists($con,$am)){
-    return -1;
-  }
-  $subject="account verification";
-  $message="http://localhost/Ergasia/verify.php?role=Φοιτητής";
-  $headers="From:noreply@Panepistimio.com" ."\r\n/";
-  mail($email,$subject,$message,$headers);
-  return 0;
-}
-function mailVerificationTeacher($con,$name,$pass,$role,$level,$fullname,$email){
-
-}
-
-
-
 ?>
-

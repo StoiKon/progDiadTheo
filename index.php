@@ -74,9 +74,16 @@ p {
                 $role=$_POST["role"];
                 $fullname=$_POST["fullname"];
                 $email=$_POST['mail'];
+                $psw=$_POST['passw'];
                 if(isset($_POST['level']) && !empty($_POST['level'])){
                   $level=$_POST['level'];
-                  print("Teacher");
+                  addTeacher($con,$fullname,$level);
+                  // gia na parw to id
+                  $result=getTeacherByName($con,$fullname);
+                  $row= $result->fetch_assoc();
+                  $tId = $row['id'];
+                  addTeUser($con,$name,$psw,$role,$tId,$email);
+                   ?><p class="alert alert-primary"><?php print("εγγραφή διδάσκοντα");?></p> <?php    
                   
                 } 
               }
@@ -87,11 +94,14 @@ p {
                 $role=$_POST["role"];
                 $fullname=$_POST["fullname"];
                 $email=$_POST['mail'];
+                $psw=$_POST['passw'];
                 if(isset($_POST['am']) && !empty($_POST['am'])){
                   if(isset($_POST['entYear']) && !empty($_POST['entYear'])){
                     $am=$_POST['am'];
                     $entyear=$_POST['entYear'];
-                    print("Student");    
+                    addStudent($con,$am,$fullname,$entyear);
+                    addStUser($con,$name,$psw,$role,$am,$email);
+                   ?><p class="alert alert-primary"><?php print("εγγραφή φοιτητή");?></p> <?php    
                   }
                 } 
               }
@@ -100,6 +110,9 @@ p {
         }
       }
     }
+  }
+  if(isset($_POST['v'])){
+    header("Location:home.php");
   } 
   ?>
   <style>
@@ -117,7 +130,7 @@ p {
   <div style="margin-inline: 20vw diplay:flex" class="mx-4">
   <button style="max-width:100px;width:30vw;height:10vh" id="showbtn" class="btn btn-secondary mx-2 px-1 mt-1">εμφάνηση login</button>
   <button style="max-width:100px;width:30vw;height:10vh" id="showbtn0" class="btn btn-secondary mx-2 px-1 mt-1">εμφάνηση εγγραφής</button>
-  <button style="max-width:100px;width:30vw;height: 10vh" id="showbtn1" class="btn btn-secondary mx-2 px-1 mt-1">επισκέπτης</button>
+  <button style="max-width:100px;width:30vw;height: 10vh" id="showbtn1" name="v" value="v" class="btn btn-secondary mx-2 px-1 mt-1">επισκέπτης</button>
 </div>
   <script src="index.js"></script>
 
