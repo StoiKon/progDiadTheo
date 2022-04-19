@@ -95,31 +95,23 @@
            <a href="#grading" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-togle">Βαθμολόγηση</a>
            <ul class="collapse no-bullets" id="grading">
                <li>
-                    <a href="#">Εισαγωγή Βαθμολόγιών</a>
+                    <a href="../Grades/add.php">Εισαγωγή Βαθμολόγιών</a>
                </li>
                <li>
-                    <a href="#">Αναζήτηση Βαθμολογιών</a>
-               </li>
-               <li>
-                    <a href="#">Οριστικοποίηση Βαθμολογίας</a>
-               </li>
-               <li><a href="#">Εμφάνηση Βαθμολογίας</a></li>
+                    <a href="../Grades/search.php">Αναζήτηση Βαθμολογιών</a></li>
+               <li><a href="../Grades/show.php">Εμφάνηση Βαθμολογίας</a></li>
                <!-- gia foithtes to teleutaio -->
             </ul>
             </li>
-            <li class="">
+            <li class="active">
            <a href="#statement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-togle">Δήλωση Μαθημάτων</a>
            <ul class="collapse no-bullets" id="statement">
                <li>
                     <a href="add.php">Εισαγωγή Δήλωσης</a>
                </li>
-               <li>
+               <li class="active">
                     <a href="modify.php">Τροποποίηση Δήλωσης</a>
                </li>
-               <li>
-                    <a href="#">Οριστικοποίηση Δήλωσης</a>
-               </li>
-               <li><a href="#">About</a></li>
             </ul>
             </li>
             <li class="">
