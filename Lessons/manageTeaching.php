@@ -85,10 +85,10 @@
                <li >
                     <a href="searchLesson.php">Αναζήτηση μαθήματος</a>
                </li>
-               <li class="active">
+               <li >
                     <a href="assignTeacher.php">Ανάθεση Διδασκαλίας</a>
                </li>
-               <li><a href="manageTeaching.php">Διαχείρηση Διδασκαλίας</a></li>
+               <li class="active"><a href="manageTeaching.php">Διαχείρηση Διδασκαλίας</a></li>
             </ul>
             </li>
             <li class="">
@@ -165,19 +165,8 @@
                     <span>+</span>
                 </button>
                 </div>
-                <?php if(isset($_POST['assign'])){
-                    if(isset($_POST['teacherSel']) && !empty($_POST['teacherSel'])){
-                        if(isset($_POST['lessonSel']) && !empty($_POST['lessonSel'])){
-                            $tid=$_POST['teacherSel'];
-                            $lid=$_POST['lessonSel'];
-                            if(isset($_POST['year']) && !empty($_POST['year'])){
-                                $year=$_POST['year'];
-                                assignToTeacher($con,$year,$tid,$lid);
-                                ?><p class="alert alert-primary"><?php print("Η ανάθεση έγινε επιτυχώς"); ?><p><?php
-                            }
-
-                        }
-                    }}
+                <?php
+            
                     if(isset($_POST['sh'])){
                         $result=showTeachings($con);
                         ?><table class="table">
@@ -207,34 +196,80 @@
                         
                         ?></tbody></table><?php
                     }
+                    if(isset($_POST['set'])){
+                        if(isset($_POST['theoryWeight']) && !empty($_POST['theoryWeight'])){
+                            if(isset($_POST['labWeight']) && !empty($_POST['labWeight'])){
+                                if(isset($_POST['Tlimit']) && !empty($_POST['Tlimit'])){
+                                    if(isset($_POST['Llimit']) && !empty($_POST['Llimit'])){
+                                        $tw = $_POST['theoryWeight'];
+                                        $lw= $_POST['labWeight'];
+                                        $tl= $_POST['Tlimit'];
+                                        $ll= $_POST['Llimit'];
+                                        if(isset($_POST['teaching']) && !empty($_POST['teaching'])){
+                                            $id= $_POST['teaching'];
+                                            setWeightsAndLimits($con,$id,$tw,$lw,$ll,$tl);
+                                            ?><p class="alert alert-primary" ><?php print("Η ανάθεση έγινε επιτυχώς"); ?></p><?php
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                        }
 
+                    }
                  ?>
                         <form method="POST">
-                        <label >Διδάσκων</label>
-                        <select style="max-width:40vw"i class="form-control form-control-md mt-2" name= "teacherSel">
-                        <?php
-                        $result=showTeachers($con); 
-                        while($row =$result->fetch_assoc()){
-                            ?><option value = "<?php echo $row['id'];?>" ><?php echo($row['fullname']);?></option>
-                            <?php } ?>
-                
+                        
 
-        
+                        <select style="max-width:40vw" name="teaching" class="form-control form-control-md mt-2">
+                            <?php
+                            $result = showTeachings($con);
+                            while($row = $result->fetch_assoc()){
+                                ?><option value="<?php echo($row['id']); ?>"><?php echo($row['fullname']."  ".$row['name']); ?></option><?php
+                            }
+                            ?>
                         </select>
-                        <label >Μάθημα</label>
-                        <select  style="max-width:40vw"class="form-control form-control-md mt-2" name= "lessonSel">
-                        <?php
-                        $result=showLessons($con); 
-                        while($row =$result->fetch_assoc()){
-                            ?><option value = "<?php echo $row['id'];?>" ><?php echo($row['name']);?></option>
-                            <?php } ?>
-                
-
         
+                        <div>
+                        <label >βάρος θεωρίας</label>
+                        <select style="max-width:40vw" name="theoryWeight" id="" class="form-control">
+                            <option value="0.1">10%</option>
+                            <option value="0.2">20%</option>
+                            <option value="0.3">30%</option>
+                            <option value="0.4">40%</option>
+                            <option value="0.5">50%</option>
+                            <option value="0.6">60%</option>
+                            <option value="0.7">70%</option>
+                            <option value="0.8">80%</option>
+                            <option value="0.9">90%</option>
+                            <option value="1">100%</option>
                         </select>
-                        <label >Χρονιά</label>
-                        <input style="max-width:40vw" name="year" class="form-control">
-                        <button type="submit"  name="assign" value="as" class="mt-3 btn btn-info">ανάθεση</button> 
+                        </div>
+                        <div>
+                        <label >βάρος εργαστηρίου</label>
+                    <select style="max-width:40vw" name="labWeight" id="" class="form-control">
+                            <option value="0.1">10%</option>
+                            <option value="0.2">20%</option>
+                            <option value="0.3">30%</option>
+                            <option value="0.4">40%</option>
+                            <option value="0.5">50%</option>
+                            <option value="0.6">60%</option>
+                            <option value="0.7">70%</option>
+                            <option value="0.8">80%</option>
+                            <option value="0.9">90%</option>
+                            <option value="1">100%</option>
+                        </select>
+                        </div>
+                        <div>
+                        <label >όριο θεωρίας</label>
+                        
+                        <input style="max-width:40vw" name="Tlimit" class="form-control">
+                        </div>
+                        <div>
+                        <label >όριο εργαστηρίου</label>
+                        <input style="max-width:40vw" name="Llimit" class="form-control">
+                        </div>
+                        <button type="submit"  name="set" value="as" class="mt-3 btn btn-info">ενημέρωση</button> 
                         </form>
                         <form method="POST">
                             <button class="btn btn-info" type="submit" name="sh" value="sh" > Εμφάνηση αναθέσεων</button>

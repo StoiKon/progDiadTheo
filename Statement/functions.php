@@ -78,4 +78,34 @@ function setWeightsAndLimits($con,$id,$wt,$wl,$ll,$tl){
 	}
 	$stmt->execute();
 }
+function resetStatement($con , $stAm){
+	$stmt=$con->prepare("DELETE FROM `Statement` WHERE stAm=?");
+    if($stmt == false){
+        print($con->error);
+    }
+	$stmt->bind_param( "s", $stAm);
+	$stmt->execute();
+}
+function makeStatement($con, $stAm ,$teachingId ){
+	$stmt=$con->prepare("INSERT INTO Statement(stAm, teachingId) VALUES (?,?)");
+    if($stmt == false){
+        print($con->error);
+    }
+	$stmt->bind_param( "si", $stAm, $teachingId);
+	$stmt->execute();
+}
+//DELETE FROM `Statement` WHERE stAm=?
+//SELECT fullname ,c.* FROM Teacher,(SELECT Lesson.name,b.* FROM Lesson ,(SELECT tid,lId,Teaching.id as teach_id FROM Teaching ,(SELECT * FROM `Statement` WHERE stAm=?) AS a WHERE teachingId= Teaching.id ) as b WHERE id = b.lId) as c WHERE c.tid = Teacher.id
+function getStatementLessons($con,$stAm){
+	$sql="SELECT fullname ,c.* FROM Teacher,(SELECT Lesson.description,Lesson.name,Lesson.semester,b.* FROM Lesson ,(SELECT tid,lId,Teaching.id as teach_id FROM Teaching ,(SELECT * FROM `Statement` WHERE stAm=?) AS a WHERE teachingId= Teaching.id ) as b WHERE id = b.lId) as c WHERE c.tid = Teacher.id";
+	$stmt=$con->prepare($sql);
+	if($stmt == false){
+		print($con->error);
+	}
+	$stmt->bind_param("s",$stAm);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	return $result;
+
+}
 ?>

@@ -88,7 +88,7 @@
                <li>
                     <a href="assignTeacher.php">Ανάθεση Διδασκαλίας</a>
                </li>
-               <li><a href="#">Διαχείρηση Διδασκαλίας</a></li>
+               <li><a href="manageTeaching.php">Διαχείρηση Διδασκαλίας</a></li>
             </ul>
             </li>
             <li class="">
@@ -111,7 +111,7 @@
            <a href="#statement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-togle">Δήλωση Μαθημάτων</a>
            <ul class="collapse no-bullets" id="statement">
                <li>
-                    <a href="#">Εισαγωγή Δήλωσης</a>
+                    <a href="../Statement/add.php">Εισαγωγή Δήλωσης</a>
                </li>
                <li>
                     <a href="#">Τροποποίηση Δήλωσης</a>

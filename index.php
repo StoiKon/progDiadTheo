@@ -48,13 +48,15 @@ p {
           ?><p style="color:red;"><?php print("Έχετε υποβάλει λάθος στοιχεία"); ?></p><?php
         }else{
           //successfull login here
-          $row= $result->fetch_assoc();
-          $_SESSION["name"]=$_POST["lname"];
+          $result=getUser($con,$_POST['lname']);
+          while($row= $result->fetch_assoc()){
+          $_SESSION["name"]=$row["name"];
           $_SESSION["role"]=$row["role"];
           $_SESSION["stAm"]=$row["stAm"];
           $_SESSION["tId"]=$row["tId"];
           $_SESSION["email"]=$row["email"];
           header("Location:home.php");          
+         }
         }
        }
         
@@ -189,7 +191,7 @@ p {
         <label for="sign">Βαθμίδα</label>
        
       <select name="level" id="bathm" class="form-control form-control-md mt-2">
-        <option value="Επίκουορς">Επίκουρος</option>
+        <option value="Επίκουρος">Επίκουρος</option>
         <option value="Αναπληρωτής">Αναπληρωτής</option>
         <option value="Καθηγητής">Καθηγητής</option>
       </select>

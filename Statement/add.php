@@ -76,22 +76,22 @@
            <li >
                <a href="../home.php">Home</a>
            </li>
-           <li class="active">
+           <li>
            <a href="#lessons" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-togle">Μαθήματα</a>
            <ul class="collapse no-bullets" id="lessons">
-               <li >
-                    <a href="add.php">Εισαγωγή μαθήματος</a>
+               <li>
+                    <a href="../Lessons/add.php">Εισαγωγή μαθήματος</a>
                </li>
-               <li >
-                    <a href="searchLesson.php">Αναζήτηση μαθήματος</a>
+               <li>
+                    <a href="../Lessons/searchLesson.php">Αναζήτηση μαθήματος</a>
                </li>
-               <li class="active">
-                    <a href="assignTeacher.php">Ανάθεση Διδασκαλίας</a>
+               <li>
+                    <a href="../Lessons/assignTeacher.php">Ανάθεση Διδασκαλίας</a>
                </li>
-               <li><a href="manageTeaching.php">Διαχείρηση Διδασκαλίας</a></li>
+               <li><a href="../Lessons/manageTeaching.php">Διαχείρηση Διδασκαλίας</a></li>
             </ul>
             </li>
-            <li class="">
+            <li >
            <a href="#grading" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-togle">Βαθμολόγηση</a>
            <ul class="collapse no-bullets" id="grading">
                <li>
@@ -111,10 +111,10 @@
            <a href="#statement" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-togle">Δήλωση Μαθημάτων</a>
            <ul class="collapse no-bullets" id="statement">
                <li>
-                    <a href="../Statement/add.php">Εισαγωγή Δήλωσης</a>
+                    <a href="add.php">Εισαγωγή Δήλωσης</a>
                </li>
                <li>
-                    <a href="#">Τροποποίηση Δήλωσης</a>
+                    <a href="modify.php">Τροποποίηση Δήλωσης</a>
                </li>
                <li>
                     <a href="#">Οριστικοποίηση Δήλωσης</a>
@@ -154,7 +154,6 @@
         <div id="content">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 
-                </div>
                 <div class="container-fluid">
                     
                     <div class="row">
@@ -165,80 +164,51 @@
                     <span>+</span>
                 </button>
                 </div>
-                <?php if(isset($_POST['assign'])){
-                    if(isset($_POST['teacherSel']) && !empty($_POST['teacherSel'])){
-                        if(isset($_POST['lessonSel']) && !empty($_POST['lessonSel'])){
-                            $tid=$_POST['teacherSel'];
-                            $lid=$_POST['lessonSel'];
-                            if(isset($_POST['year']) && !empty($_POST['year'])){
-                                $year=$_POST['year'];
-                                assignToTeacher($con,$year,$tid,$lid);
-                                ?><p class="alert alert-primary"><?php print("Η ανάθεση έγινε επιτυχώς"); ?><p><?php
+                </div>
+                    
+                    <?php
+                    
+                    if(isset($_POST['badd'])){
+                        if(isset($_POST['lessons']) ){
+                            //$lessons = $_POST['lessons'];
+                            resetStatement($con,$_SESSION['stAm'],$t);
+                            foreach($_POST['lessons'] as $t){
+                                makeStatement($con,$_SESSION['stAm'],$t);
                             }
 
-                        }
-                    }}
-                    if(isset($_POST['sh'])){
+                        }                    
+                    }
+                    print( "<h>χρήστης ".$_SESSION['name'] ." ρόλος ". $_SESSION['role']." AM ".$_SESSION['stAm']."</h>" );
+                    ?>
+                    <div id="addL" style="width:60vw;max-width:600px" class="h-25 p-3 mt-5 mx-auto px-auto">
+                    <form id="addForm" method="POST">
+                    <?php
                         $result=showTeachings($con);
                         ?><table class="table">
                             <thead><tr>
-                                    <th scope="col">χρόνος</th>
+                                    <th scope="col">Τίτλος</th>
+                                    <th scope="col">διδάσκοντας</th>
+                                    <th scope="col">Περιγραφή</th>
                                     <th scope="col">εξάμηνο</th>
-                                    <th scope="col">βάρος θεωρίας</th>
-                                    <th scope="col">βάρος εργαστηρίου</th>
-                                    <th scope="col">όριο θεωρίας</th>
-                                    <th scope="col">όριο εργαστηρίου</th>
-                                    <th scope="col">Μάθημα</th>
-                                    <th scope="col">Διδάσκων</th>
+                                    <th scope="col">Δήλωση</th>
                             </tr></thead><tbody><?php
                             while($row= $result->fetch_assoc()){
                                 ?><tr>
-                                <td><?php print($row['year']); ?></td>
-                                <td><?php print($row['semester']); ?></td>
-                                <td><?php print($row['weightTheory']); ?></td>
-                                <td><?php print($row['weightLab']); ?></td>
-                                <td><?php print($row['labLimit']); ?></td>
-                                <td><?php print($row['theoryLimit']); ?></td>
                                 <td><?php print($row['name']); ?></td>
-                                <td><?php print($row['fullname']);?></td>
+                                <td><?php print($row['fullname']); ?></td>
+                                <td><?php print($row['description']); ?></td>
+                                <td><?php print($row['semester']);?></td>
+                                <td><input type="checkbox" class="form form-check-input" name="lessons[]" value="<?php echo($row['id']); ?>" ></td>
+                                
                             </tr><?php
-
                             }
                         
                         ?></tbody></table><?php
-                    }
-
-                 ?>
-                        <form method="POST">
-                        <label >Διδάσκων</label>
-                        <select style="max-width:40vw"i class="form-control form-control-md mt-2" name= "teacherSel">
-                        <?php
-                        $result=showTeachers($con); 
-                        while($row =$result->fetch_assoc()){
-                            ?><option value = "<?php echo $row['id'];?>" ><?php echo($row['fullname']);?></option>
-                            <?php } ?>
-                
-
-        
-                        </select>
-                        <label >Μάθημα</label>
-                        <select  style="max-width:40vw"class="form-control form-control-md mt-2" name= "lessonSel">
-                        <?php
-                        $result=showLessons($con); 
-                        while($row =$result->fetch_assoc()){
-                            ?><option value = "<?php echo $row['id'];?>" ><?php echo($row['name']);?></option>
-                            <?php } ?>
-                
-
-        
-                        </select>
-                        <label >Χρονιά</label>
-                        <input style="max-width:40vw" name="year" class="form-control">
-                        <button type="submit"  name="assign" value="as" class="mt-3 btn btn-info">ανάθεση</button> 
-                        </form>
-                        <form method="POST">
-                            <button class="btn btn-info" type="submit" name="sh" value="sh" > Εμφάνηση αναθέσεων</button>
-                        </form> 
+                    
+                    ?>
+                    <button type="submit" name="badd" id="addLessonsForm" class="btn btn-info mt-2 mx-3" >Υποβολή</button>
+                </form>
+                    </div>
                     </div>
 
 
