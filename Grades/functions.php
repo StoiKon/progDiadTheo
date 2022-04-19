@@ -108,4 +108,49 @@ function getStatementLessons($con,$stAm){
 	return $result;
 
 }
+//SELECT a.*,Lesson.name,Lesson.semster FROM Lesson,(SELECT * FROM `Teaching` WHERE tId=?) as a WHERE Lesson.id = a.lId
+function getLessonsByTeacher($con,$tid){
+	$sql="SELECT a.*,Lesson.name,Lesson.semester FROM Lesson,(SELECT * FROM `Teaching` WHERE tId=?) as a WHERE Lesson.id = a.lId";
+	$stmt=$con->prepare($sql);
+	if($stmt == false){
+		print($con->error);
+	}
+	$stmt->bind_param("i",$tid);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	return $result;
+
+}
+function getStatementByTeaching($con,$teachingId){
+	$sql="SELECT * FROM `Statement` WHERE teachingId = ?";
+	$stmt=$con->prepare($sql);
+	if($stmt == false){
+		print($con->error);
+	}
+	$stmt->bind_param("i",$teachingId);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	return $result;
+
+}
+function setGrades($con,$thgrade,$lagrade,$stAm,$teachingId ){
+	$stmt=$con->prepare("UPDATE `Statement` SET `theoryGrade`=?,`labGrade`=? WHERE stAm=? AND teachingId=?");
+    if($stmt == false){
+        print($con->error);
+    }
+	$stmt->bind_param( "iisi", $thgrade, $lagrade, $stAm, $teachingId);
+	$stmt->execute();
+}
+//SELECT Lesson.name , b.* ,(b.labGrade*b.weightLab)+(b.theoryGrade*b.weightTheory) as grade FROM Lesson,(SELECT labGrade,theoryGrade,lId,weightTheory,weightLab FROM Teaching,(SELECT * FROM `Statement` WHERE stAm=?) as a where teachingId=Teaching.id) as b WHERE lId=Lesson.id
+function getStudentGrades($con,$stAm){
+	$sql="SELECT Lesson.name , b.* ,(b.labGrade*b.weightLab)+(b.theoryGrade*b.weightTheory) as grade FROM Lesson,(SELECT labGrade,theoryGrade,lId,weightTheory,weightLab FROM Teaching,(SELECT * FROM `Statement` WHERE stAm=?) as a where teachingId=Teaching.id) as b WHERE lId=Lesson.id";
+	$stmt=$con->prepare($sql);
+	if($stmt == false){
+		print($con->error);
+	}
+	$stmt->bind_param("s",$stAm);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	return $result;
+}
 ?>

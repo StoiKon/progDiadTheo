@@ -175,22 +175,24 @@
                     <div id="addL" style="width:60vw;max-width:600px" class="h-25 p-3 mt-5 mx-auto px-auto">
                     <form id="addForm" method="POST">
                     <?php
-                        $result=showTeachings($con);
+                        $result=getStudentGrades($con,$_SESSION['stAm']);
                         ?><table class="table">
                             <thead><tr>
                                     <th scope="col">Τίτλος</th>
-                                    <th scope="col">διδάσκοντας</th>
-                                    <th scope="col">Περιγραφή</th>
-                                    <th scope="col">εξάμηνο</th>
-                                    <th scope="col">Δήλωση</th>
+                                    <th scope="col">Βαθμός Εργαστηρίου</th>
+                                    <th scope="col">Βαθμός Θεωρίας</th>
+                                    <th scope="col">Βάρος Εργαστηρίου</th>
+                                    <th scope="col">Βάρος Θεωρίας</th>
+                                    <th scope="col">Συνολικός Βαθμός</th>
                             </tr></thead><tbody><?php
                             while($row= $result->fetch_assoc()){
                                 ?><tr>
                                 <td><?php print($row['name']); ?></td>
-                                <td><?php print($row['fullname']); ?></td>
-                                <td><?php print($row['description']); ?></td>
-                                <td><?php print($row['semester']);?></td>
-                                <td><input type="checkbox" class="form form-check-input" name="lessons[]" value="<?php echo($row['id']); ?>" ></td>
+                                <td><?php print($row['labGrade']); ?></td>
+                                <td><?php print($row['theoryGrade']); ?></td>
+                                <td><?php print($row['weightLab']);?></td>
+                                <td><?php print($row['weightTheory']);?></td>
+                                <td><?php print($row['grade']);?></td>
                                 
                             </tr><?php
                             }

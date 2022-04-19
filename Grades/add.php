@@ -160,46 +160,66 @@
                 </div>
                     
                     <?php
+                    if(isset($_POST['gradingInTheNameOf'])){
+                        $result=getStatementByTeaching($con,$_SESSION['teachingId']);
+                        $teachingId=$_SESSION['teachingId'];
+                        unset($_SESSION['teachingId']);
+                        while($row=$result->fetch_assoc()){
+                            if(isset($_POST[$row['stAm']]) && !empty($_POST[$row['stAm']])){
+                                if(isset($_POST[$row['stAm']."b"]) && !empty($_POST[$row['stAm']."b"])){
+                                    setGrades($con,$_POST[$row['stAm']],$_POST[$row['stAm']."b"],$row['stAm'],$teachingId );
+                                }
+                            }
+                        }
+                    }
                     
                     if(isset($_POST['badd'])){
-                        if(isset($_POST['lessons']) ){
-                            //$lessons = $_POST['lessons'];
-                            resetStatement($con,$_SESSION['stAm'],$t);
-                            foreach($_POST['lessons'] as $t){
-                                makeStatement($con,$_SESSION['stAm'],$t);
-                            }
-
-                        }                    
-                    }
-                    print( "<h>χρήστης ".$_SESSION['name'] ." ρόλος ". $_SESSION['role']." AM ".$_SESSION['tId']."</h>" );
-                    ?>
-                    <div id="addL" style="width:60vw;max-width:600px" class="h-25 p-3 mt-5 mx-auto px-auto">
-                    <form id="addForm" method="POST">
-                    <?php
-                        $result=showTeachings($con);
-                        ?><table class="table">
+                        if(isset($_POST['lesson']) && !empty($_POST['lesson'])){
+                            $result=getStatementByTeaching($con,$_POST['lesson']);
+                            ?>
+                            <div class="px-auto">
+                            <form method="POST">
+                            <table class="table">
                             <thead><tr>
-                                    <th scope="col">Τίτλος</th>
-                                    <th scope="col">διδάσκοντας</th>
-                                    <th scope="col">Περιγραφή</th>
-                                    <th scope="col">εξάμηνο</th>
-                                    <th scope="col">Δήλωση</th>
+                                    <th scope="col">Aριθμός Μητρώου</th>
+                                    <th scope="col">Βαθμολογία Θεωρίας</th>
+                                    <th scope="col">Βαθμολογία Εργαστηρίου</th>
                             </tr></thead><tbody><?php
+                            $_SESSION['teachingId']=$_POST['lesson'];
                             while($row= $result->fetch_assoc()){
                                 ?><tr>
-                                <td><?php print($row['name']); ?></td>
-                                <td><?php print($row['fullname']); ?></td>
-                                <td><?php print($row['description']); ?></td>
-                                <td><?php print($row['semester']);?></td>
-                                <td><input type="checkbox" class="form form-check-input" name="lessons[]" value="<?php echo($row['id']); ?>" ></td>
-                                
+                                <td><?php print($row['stAm']); ?></td>
+                                <td><input name="<?php echo($row['stAm']); ?>" class="form form-control w-25"> </td>
+                                <td><input name="<?php echo($row['stAm']."b"); ?>" class="form form-control w-25"> </td>
                             </tr><?php
                             }
-                        
-                        ?></tbody></table><?php
+
+                            ?>
+                        <tr><th></th>
+                        <th><button type="submit" name="gradingInTheNameOf" id="iWontUseThisIdSoItDoesntMatterWhatNameIGiveIt" class="btn btn-info mt-2 mx-3" >Υποβολή</button> </th>
+                        </tbody> 
+                        </form>
+                        </div>
+                        <?php
+                        }
+                    }
                     
+                    print( "<h>χρήστης ".$_SESSION['name'] ." ρόλος ". $_SESSION['role']." AM ".$_SESSION['tId']."</h>" );
                     ?>
-                    <button type="submit" name="badd" id="addLessonsForm" class="btn btn-info mt-2 mx-3" >Υποβολή</button>
+                    <div id="addL" style="width:60vw;max-width:600px" class="h-50 p-3 mt-5 mx-auto px-auto">
+                    <form id="addForm" method="POST">
+                    <label>Μαθήματα διδάσκοντα</label>
+                    <select name="lesson" class = "form form-control" id="">                    
+                        <?php
+                        $result=getLessonsByTeacher($con,$_SESSION['tId']);
+                            while($row= $result->fetch_assoc()){
+                                ?><option value="<?php echo($row['id']); ?>"> <?php echo($row['name']); ?> </option><?php
+                            }
+                    ?>
+                    </select>
+
+
+                    <button type="submit" name="badd" id="addLessonsForm" style="display:inline;" class="btn btn-info mt-2 mx-3" >επιλογή</button>
                 </form>
                     </div>
                     </div>
