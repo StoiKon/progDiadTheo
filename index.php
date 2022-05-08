@@ -49,7 +49,8 @@ p {
         }else{
           //successfull login here
           $result=getUser($con,$_POST['lname']);
-          while($row= $result->fetch_assoc()){
+          while($row = $result->fetch_assoc()){
+          $_SESSION['id']=$row['id'];
           $_SESSION["name"]=$row["name"];
           $_SESSION["role"]=$row["role"];
           $_SESSION["stAm"]=$row["stAm"];

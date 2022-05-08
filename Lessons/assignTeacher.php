@@ -129,14 +129,14 @@
             <li class="">
            <a href="#profil" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-togle">Προφίλ</a>
            <ul class="collapse no-bullets" id="profil">
-               <li>
-                    <a href="#">Επισκόπηση Προφίλ</a>
+           <li>
+                    <a href="../Profile/vew.php">Επισκόπηση Προφίλ</a>
                </li>
                <li>
-                    <a href="#">Τροποποίηση Προφίλ</a>
+                    <a href="../Profile/modifyProfile.php">Τροποποίηση Προφίλ</a>
                </li>
                <li>
-                    <a href="#">Διαχείρηση Χρηστών</a>
+                    <a href="../Profile/ManageUser.php">Διαχείρηση Χρηστών</a>
                 </li>
             </li>
        </ul>

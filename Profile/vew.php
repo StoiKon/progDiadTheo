@@ -130,14 +130,14 @@
             <li class="">
            <a href="#profil" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-togle">Προφίλ</a>
            <ul class="collapse no-bullets" id="profil">
-           <li>
-                    <a href="../Profile/vew.php">Επισκόπηση Προφίλ</a>
+               <li>
+                    <a href="vew.php">Επισκόπηση Προφίλ</a>
                </li>
                <li>
-                    <a href="../Profile/modifyProfile.php">Τροποποίηση Προφίλ</a>
+                    <a href="modifyProfile.php">Τροποποίηση Προφίλ</a>
                </li>
                <li>
-                    <a href="../Profile/ManageUser.php">Διαχείρηση Χρηστών</a>
+                    <a href="ManageUser.php">Διαχείρηση Χρηστών</a>
                 </li>
             </li>
        </ul>
@@ -159,54 +159,72 @@
                 </div>
                 </div>
                     
-                    <?php
-                        if(isset($_POST['lesson']) && !empty($_POST['lesson'])){
-                            $result=getStatementByTeaching($con,$_POST['lesson']);
-                            ?>
+                    
                             <div class="px-auto">
-                            <form method="POST">
-                            <table class="table">
-                            <thead><tr>
-                                    <th scope="col">Aριθμός Μητρώου</th>
-                                    <th scope="col">Βαθμολογία Θεωρίας</th>
-                                    <th scope="col">Βαθμολογία Εργαστηρίου</th>
-                            </tr></thead><tbody><?php
-                            $_SESSION['teachingId']=$_POST['lesson'];
-                            while($row= $result->fetch_assoc()){
-                                ?><tr>
-                                <td><?php print($row['stAm']); ?></td>
-                                <td><?php print($row['theoryGrade']); ?></td>
-                                <td><?php print($row['labGrade']); ?></td>
-                            </tr><?php
-                            }
-
-                            ?>
-                        <tr><th></th>
-                        <th><button type="submit" name="gradingInTheNameOf" id="iWontUseThisIdSoItDoesntMatterWhatNameIGiveIt" class="btn btn-info mt-2 mx-3" >Υποβολή</button> </th>
-                        </tbody> 
-                        </form>
                         </div>
                         <?php
-                        }
+                        
                     
-                    
-                    print( "<h>χρήστης ".$_SESSION['name'] ." ρόλος ". $_SESSION['role']." AM ".$_SESSION['tId']."</h>" );
+                    $case = 0;
+                    if(strcmp($_SESSION['role'],"Φοιτητής") == 0){
+                        $case =1;
+                        print( "<h>χρήστης ".$_SESSION['name'] ." ρόλος ". $_SESSION['role']." AM ".$_SESSION['stAm']."</h>" );}
+                    if(strcmp($_SESSION['role'],"Διδάσκων") == 0){
+                        $case = 2;
+                        print( "<h>χρήστης ".$_SESSION['name'] ." ρόλος ". $_SESSION['role']." AM ".$_SESSION['tId']."</h>" );}
                     ?>
                     <div id="addL" style="width:60vw;max-width:600px" class="h-50 p-3 mt-5 mx-auto px-auto">
                     <form id="addForm" method="POST">
-                    <label>Μαθήματα διδάσκοντα</label>
-                    <select name="lesson" class = "form form-control" id="">                    
+                    <label>Προφίλ</label>
                         <?php
-                        $result=getLessonsByTeacher($con,$_SESSION['tId']);
-                            while($row= $result->fetch_assoc()){
-                                ?><option value="<?php echo($row['id']); ?>"> <?php echo($row['name']); ?> </option><?php
+                        $result=getUserById($con,$_SESSION['id']);
+                            ?><table class = "table">
+                                <thead><tr>
+                                    <th>όνομα χρήστη</th>
+                                    <th>ρόλος</th>
+                                    <th>email</th>
+                                <?php 
+                                if($case ==1){
+                                    //foithths
+                                    $result2=getStudent($con,$_SESSION['stAm']);
+                                ?><th>Ονοματεπώνυμο</th>
+                                <th>έτος εισαγωγής</th><?php
+
+                                }
+
+                                if($case == 2){
+                                    //didaskwn
+                                    $result2=getTeacher($con,$_SESSION['tId']);
+                                    ?><th>Ονοματεπώνυμο</th>
+                                <th>βαθμίδα</th><?php
+                                }
+                                ?>    
+                                </tr></thead><tbody>
+                                <?php
+                           $row= $result->fetch_assoc();
+                            ?><td><?php echo($row['name']); ?></td><?php
+                            ?><td><?php echo($row['role']);?></td><?php
+                            ?><td><?php echo($row['email']);?></td><?php
+                            if($case ==1){
+                           $row2=$result2->fetch_assoc();
+                                //foithths
+                            ?><td><?php echo($row2['fullname']); ?></td><?php
+                            ?><td><?php echo($row2['EntYear']); ?></td><?php
+
                             }
+
+                            if($case == 2){
+                           $row2=$result2->fetch_assoc();
+                                //didaskwn
+                            ?><td><?php echo($row2['fullname']); ?></td><?php
+                            ?><td><?php echo($row2['lvl']); ?></td><?php
+                            }
+
+                            ?></tbody></table><?php
                     ?>
-                    </select>
 
 
-                    <button type="submit" name="badd" id="addLessonsForm" style="display:inline;" class="btn btn-info mt-2 mx-3" >επιλογή</button>
-               
+                </form>
                     </div>
                     </div>
 
